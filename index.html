@@ -1,0 +1,623 @@
+<!DOCTYPE html>
+<html lang="th">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Samsung MS% Survey</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Sans+Thai:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@tabler/icons-webfont@latest/tabler-icons.min.css" />
+  <style>
+    :root {
+      --blue: #1428A0;
+      --blue-light: #E6F1FB;
+      --blue-mid: #85B7EB;
+      --blue-dark: #0C447C;
+      --green: #0F6E56;
+      --green-light: #E1F5EE;
+      --green-mid: #5DCAA5;
+      --red: #E24B4A;
+      --red-light: #FCEBEB;
+      --amber: #EF9F27;
+      --amber-light: #FAEEDA;
+      --bg: #F4F4F2;
+      --surface: #FFFFFF;
+      --surface2: #F0EEE9;
+      --border: #E2DED8;
+      --border2: #CCC9C2;
+      --text: #1A1916;
+      --text2: #6B6860;
+      --text3: #9A9790;
+      --saved-bg: #EAF3DE;
+      --saved-border: #97C459;
+      --saved-text: #27500A;
+      --radius-sm: 6px;
+      --radius-md: 10px;
+      --radius-lg: 14px;
+      --shadow: 0 1px 3px rgba(0,0,0,.06), 0 1px 2px rgba(0,0,0,.04);
+      --shadow-md: 0 4px 12px rgba(0,0,0,.08);
+    }
+
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    body {
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      background: var(--bg);
+      color: var(--text);
+      min-height: 100vh;
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── TOPBAR ── */
+    .topbar {
+      background: var(--blue);
+      padding: 0 1.5rem;
+      height: 56px;
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+      box-shadow: 0 2px 8px rgba(20,40,160,.3);
+    }
+    .topbar-logo {
+      font-size: 15px;
+      font-weight: 600;
+      color: white;
+      letter-spacing: .04em;
+    }
+    .topbar-sep { width: 1px; height: 20px; background: rgba(255,255,255,.25); }
+    .topbar-title { font-size: 14px; color: rgba(255,255,255,.85); }
+    .topbar-spacer { flex: 1; }
+    .conn-badge {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      font-size: 11px;
+      color: rgba(255,255,255,.75);
+    }
+    .conn-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      background: #5DCAA5;
+      box-shadow: 0 0 0 2px rgba(93,202,165,.3);
+      animation: pulse 2s infinite;
+    }
+    @keyframes pulse {
+      0%,100%{box-shadow:0 0 0 2px rgba(93,202,165,.3)}
+      50%{box-shadow:0 0 0 4px rgba(93,202,165,.15)}
+    }
+
+    /* ── LAYOUT ── */
+    .page { max-width: 680px; margin: 0 auto; padding: 1.5rem 1rem 4rem; }
+
+    /* ── CARD ── */
+    .card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      padding: 1.25rem;
+      margin-bottom: .875rem;
+    }
+
+    /* ── FILTER ── */
+    .filter-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .75rem; margin-bottom: 1rem; }
+    .fl { display: flex; flex-direction: column; gap: 4px; }
+    .fl label { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: .04em; }
+    select {
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      font-size: 13px;
+      padding: 8px 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
+      cursor: pointer;
+      appearance: none;
+      background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1l5 5 5-5' stroke='%236B6860' stroke-width='1.5' fill='none' stroke-linecap='round'/%3E%3C/svg%3E");
+      background-repeat: no-repeat;
+      background-position: right 10px center;
+      padding-right: 28px;
+    }
+    select:focus { outline: none; border-color: var(--blue); }
+
+    /* ── CATEGORY CARDS ── */
+    .cat-divider { border: none; border-top: 1px solid var(--border); margin: 1rem 0; }
+    .cat-label { font-size: 11px; font-weight: 500; color: var(--text2); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .625rem; }
+    .cat-grid { display: grid; grid-template-columns: 1fr 1fr; gap: .625rem; }
+    .cat-card {
+      display: flex; align-items: center; gap: 12px;
+      padding: .875rem 1rem;
+      border: 2px solid var(--border);
+      border-radius: var(--radius-md);
+      cursor: pointer;
+      background: var(--bg);
+      transition: all .15s;
+      user-select: none;
+    }
+    .cat-card:hover { border-color: var(--border2); }
+    .cat-icon {
+      width: 38px; height: 38px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      font-size: 18px;
+      background: var(--surface2);
+      color: var(--text2);
+      flex-shrink: 0;
+      transition: all .15s;
+    }
+    .cat-name { font-size: 14px; font-weight: 500; color: var(--text); }
+    .cat-count { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .cat-card.ref-on { border-color: var(--blue); background: var(--blue-light); }
+    .cat-card.ref-on .cat-icon { background: var(--blue); color: white; }
+    .cat-card.ref-on .cat-name { color: var(--blue-dark); }
+    .cat-card.wm-on { border-color: var(--green); background: var(--green-light); }
+    .cat-card.wm-on .cat-icon { background: var(--green); color: white; }
+    .cat-card.wm-on .cat-name { color: var(--green); }
+
+    /* ── BANNER ── */
+    .banner {
+      display: flex; align-items: center; gap: 8px;
+      padding: .625rem 1rem;
+      border-radius: var(--radius-md);
+      font-size: 13px; font-weight: 500;
+      margin-bottom: .875rem;
+    }
+    .banner.ref { background: var(--blue-light); color: var(--blue-dark); border: 1px solid var(--blue-mid); }
+    .banner.wm  { background: var(--green-light); color: var(--green);     border: 1px solid var(--green-mid); }
+
+    /* ── STATS ── */
+    .stats { display: grid; grid-template-columns: repeat(3,1fr); gap: .625rem; margin-bottom: .875rem; }
+    .stat {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-md);
+      padding: .875rem 1rem;
+      box-shadow: var(--shadow);
+    }
+    .stat-num { font-size: 22px; font-weight: 600; color: var(--text); font-family: 'IBM Plex Mono', monospace; }
+    .stat-lbl { font-size: 11px; color: var(--text3); margin-top: 2px; }
+
+    /* ── PROGRESS BAR ── */
+    .prog-wrap { height: 3px; background: var(--border); border-radius: 2px; margin-bottom: .875rem; overflow: hidden; }
+    .prog-fill  { height: 100%; background: var(--blue); border-radius: 2px; transition: width .4s ease; }
+
+    /* ── BRANCH CARD ── */
+    .bc {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      margin-bottom: .625rem;
+      overflow: hidden;
+      transition: border-color .15s;
+    }
+    .bc.open { border-color: var(--border2); }
+    .bc-head {
+      display: flex; align-items: center; gap: 10px;
+      padding: .875rem 1rem;
+      cursor: pointer;
+    }
+    .bc-head:hover { background: var(--bg); }
+    .rk-badge {
+      width: 24px; height: 24px;
+      border-radius: 50%;
+      font-size: 11px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .rk2 { background: var(--amber-light); color: #854F0B; }
+    .rk3 { background: var(--red-light);   color: #A32D2D; }
+    .rk4,.rk5,.rk6,.rk7 { background: #FCBBBB; color: #6B1414; }
+    .rk-na { background: var(--surface2); color: var(--text2); }
+    .bc-info { flex: 1; min-width: 0; }
+    .bc-name { font-size: 13px; font-weight: 500; color: var(--text); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .bc-sub  { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    .bc-right { display: flex; align-items: center; gap: 6px; flex-shrink: 0; }
+    .pill { font-size: 11px; padding: 3px 8px; border-radius: 20px; font-weight: 500; white-space: nowrap; }
+    .pill-r1    { background: var(--red-light);   color: #A32D2D; }
+    .pill-r1-wm { background: var(--green-light); color: var(--green); }
+    .pill-sam   { background: var(--blue-light);  color: var(--blue-dark); }
+    .done-dot   { width: 8px; height: 8px; border-radius: 50%; background: #639922; flex-shrink: 0; }
+    .chev { font-size: 14px; color: var(--text3); transition: transform .2s; }
+    .chev.r { transform: rotate(180deg); }
+
+    /* ── BODY ── */
+    .bc-body { display: none; border-top: 1px solid var(--border); padding: 1rem; }
+    .bc-body.show { display: block; }
+    .body-sec-title { font-size: 11px; font-weight: 500; color: var(--text3); text-transform: uppercase; letter-spacing: .04em; margin-bottom: .625rem; }
+
+    /* ── BARS ── */
+    .bar-row { display: flex; align-items: center; gap: 8px; margin-bottom: 5px; }
+    .br-name { font-size: 11px; width: 80px; text-align: right; flex-shrink: 0; color: var(--text2); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .br-name.sam { color: var(--blue); font-weight: 600; }
+    .bar-track { flex: 1; background: var(--surface2); border-radius: 3px; height: 12px; overflow: hidden; }
+    .bar-fill  { height: 100%; border-radius: 3px; }
+    .f-sam { background: var(--blue); }
+    .f-r1  { background: var(--red); }
+    .f-r2  { background: var(--amber); }
+    .f-oth { background: #C8C5BC; }
+    .br-pct { font-size: 11px; width: 38px; flex-shrink: 0; color: var(--text2); }
+    .br-pct.sam { color: var(--blue); font-weight: 600; }
+    .br-pct.r1  { color: #A32D2D; font-weight: 600; }
+
+    /* ── RIVALS ── */
+    .rivals-wrap { margin: .875rem 0; }
+    .rival-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: .6rem .85rem;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      margin-bottom: 5px;
+    }
+    .r-rk { width: 20px; height: 20px; border-radius: 50%; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .r-name { font-size: 12px; font-weight: 500; color: var(--text); flex: 1; }
+    .r-ms   { font-size: 12px; font-weight: 600; color: #A32D2D; }
+    .sam-row {
+      display: flex; align-items: center; gap: 8px;
+      padding: .6rem .85rem;
+      background: var(--blue-light);
+      border: 1px solid var(--blue-mid);
+      border-radius: var(--radius-sm);
+      margin-bottom: .875rem;
+    }
+    .s-rk   { width: 20px; height: 20px; border-radius: 50%; background: var(--blue); color: white; font-size: 10px; font-weight: 600; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .s-name { font-size: 12px; font-weight: 500; color: var(--blue-dark); flex: 1; }
+    .s-ms   { font-size: 12px; font-weight: 600; color: #185FA5; }
+
+    /* ── FORM ── */
+    .divider { border: none; border-top: 1px solid var(--border); margin: .875rem 0; }
+    .fb-block { margin-bottom: .875rem; }
+    .fb-hd { display: flex; align-items: flex-start; gap: 8px; margin-bottom: 6px; }
+    .fb-num {
+      width: 20px; height: 20px; border-radius: 50%;
+      background: var(--blue-light); color: var(--blue-dark);
+      font-size: 10px; font-weight: 600;
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0; margin-top: 1px;
+    }
+    .fb-title { font-size: 12px; font-weight: 600; color: var(--text); line-height: 1.4; }
+    .fb-sub   { font-size: 11px; color: var(--text3); margin-top: 2px; }
+    textarea {
+      width: 100%; min-height: 72px;
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      font-size: 13px; line-height: 1.6;
+      padding: 9px 11px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--bg);
+      color: var(--text);
+      resize: vertical;
+    }
+    textarea:focus { outline: none; border-color: var(--blue); }
+    .footer-row { display: flex; justify-content: flex-end; gap: 8px; margin-top: .875rem; }
+    .btn-cancel {
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      font-size: 12px; padding: 7px 14px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      background: var(--surface); color: var(--text2);
+      cursor: pointer;
+    }
+    .btn-save {
+      font-family: 'IBM Plex Sans Thai', sans-serif;
+      font-size: 12px; font-weight: 500; padding: 7px 16px;
+      border: none; border-radius: var(--radius-sm);
+      background: var(--blue); color: white;
+      cursor: pointer; display: flex; align-items: center; gap: 5px;
+      transition: opacity .15s;
+    }
+    .btn-save:hover { opacity: .87; }
+    .btn-save:disabled { opacity: .5; cursor: not-allowed; }
+    .saved-box {
+      display: flex; align-items: center; gap: 8px;
+      padding: .75rem 1rem;
+      background: var(--saved-bg);
+      border: 1px solid var(--saved-border);
+      border-radius: var(--radius-sm);
+    }
+    .error-box {
+      display: flex; align-items: center; gap: 8px;
+      padding: .75rem 1rem;
+      background: var(--red-light);
+      border: 1px solid #F09595;
+      border-radius: var(--radius-sm);
+      font-size: 12px; color: #A32D2D;
+      margin-top: .5rem;
+    }
+
+    /* ── EMPTY ── */
+    .empty { text-align: center; padding: 3rem 1rem; color: var(--text3); font-size: 13px; }
+    .empty i { font-size: 28px; display: block; margin-bottom: .5rem; color: #97C459; }
+
+    /* ── MOBILE ── */
+    @media (max-width: 480px) {
+      .page { padding: 1rem .75rem 4rem; }
+      .filter-grid { grid-template-columns: 1fr; }
+      .stats { grid-template-columns: repeat(3,1fr); }
+      .bc-right .pill { display: none; }
+      .bc-right .pill:first-child { display: inline-flex; }
+    }
+  </style>
+</head>
+<body>
+
+<nav class="topbar">
+  <span class="topbar-logo">SAMSUNG</span>
+  <div class="topbar-sep"></div>
+  <span class="topbar-title">MS% Survey</span>
+  <div class="topbar-spacer"></div>
+  <div class="conn-badge">
+    <div class="conn-dot"></div>
+    เชื่อมต่อ Google Sheet แล้ว
+  </div>
+</nav>
+
+<main class="page">
+
+  <div class="card">
+    <div class="filter-grid">
+      <div class="fl">
+        <label>Region</label>
+        <select id="f-region" onchange="onFilter()">
+          <option value="">ทุก Region</option>
+          <option value="Bangkok">Bangkok</option>
+          <option value="Central">Central</option>
+        </select>
+      </div>
+      <div class="fl">
+        <label>AS Code</label>
+        <select id="f-as" onchange="onFilter()">
+          <option value="">ทุก AS Code</option>
+        </select>
+      </div>
+    </div>
+
+    <hr class="cat-divider" />
+    <div class="cat-label">เลือก Category</div>
+    <div class="cat-grid">
+      <div class="cat-card ref-on" id="card-ref" onclick="setCat('ref')">
+        <div class="cat-icon" id="icon-ref"><i class="ti ti-fridge"></i></div>
+        <div>
+          <div class="cat-name">Refrigerator</div>
+          <div class="cat-count" id="count-ref">— สาขาที่แพ้</div>
+        </div>
+      </div>
+      <div class="cat-card" id="card-wm" onclick="setCat('wm')">
+        <div class="cat-icon" id="icon-wm"><i class="ti ti-wash-machine"></i></div>
+        <div>
+          <div class="cat-name">Washing Machine</div>
+          <div class="cat-count" id="count-wm">— สาขาที่แพ้</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="banner ref" id="banner">
+    <i class="ti ti-fridge" id="banner-icon"></i>
+    <span id="banner-text">Refrigerator — แสดงสาขาที่ Samsung แพ้ใน REF</span>
+  </div>
+
+  <div class="stats">
+    <div class="stat"><div class="stat-num" id="s-total">—</div><div class="stat-lbl">สาขาที่แพ้</div></div>
+    <div class="stat"><div class="stat-num" id="s-done">0</div><div class="stat-lbl">บันทึกแล้ว</div></div>
+    <div class="stat"><div class="stat-num" id="s-pct">0%</div><div class="stat-lbl">ความคืบหน้า</div></div>
+  </div>
+
+  <div class="prog-wrap"><div class="prog-fill" id="prog" style="width:0%"></div></div>
+
+  <div id="blist"></div>
+  <div class="empty" id="empty" style="display:none">
+    <i class="ti ti-circle-check"></i>
+    ไม่มีสาขาที่แพ้ใน Filter นี้
+  </div>
+
+</main>
+
+<script>
+const GAS_URL = "https://script.google.com/macros/s/AKfycbyKkkIQpZTd0pedUwg7TMFunbv5bOVZQnbazRsm0T24RHKquothpee_BwGva-4VllYDpA/exec";
+
+const RAW=[{"r":"Bangkok","a":"AS BKK01","b":"BIG C EXTRA (SUWINTAWONG)","rr1":"HISENSE","rr1m":31.9,"srm":9.7,"srk":4,"rl":true,"wr1":"LG","wr1m":42.4,"swm":7.6,"swk":4,"wl":true,"brands":[["LG",20.1,42.4],["HISENSE",31.9,20.7],["HAIER",20.0,6.2],["SAMSUNG",9.7,7.6],["TOSHIBA",3.8,12.6],["ELECTROLUX",5.1,6.7],["SHARP",5.6,0.0],["ACONATIC",3.7,0.0],["HITACHI",0.0,3.8]]},{"r":"Bangkok","a":"AS BKK01","b":"BIG C EXTRA (NONGCHOK)","rr1":"SAMSUNG","rr1m":27.8,"srm":27.8,"srk":1,"rl":false,"wr1":"LG","wr1m":37.3,"swm":23.6,"swk":2,"wl":true,"brands":[["LG",24.6,37.3],["SAMSUNG",27.8,23.6],["HAIER",16.6,14.5],["MITSUBISHI",9.5,0.0],["TOSHIBA",2.0,14.5],["HISENSE",2.6,10.0],["TCL",5.2,0.0],["HITACHI",4.7,0.0],["SHARP",3.7,0.0],["ACONATIC",3.3,0.0]]},{"r":"Bangkok","a":"AS BKK02","b":"BIG C EXTRA (RATCHADAPISEK)","rr1":"SAMSUNG","rr1m":30.1,"srm":30.1,"srk":1,"rl":false,"wr1":"TOSHIBA","wr1m":55.3,"swm":8.7,"swk":3,"wl":true,"brands":[["TOSHIBA",22.8,55.3],["SAMSUNG",30.1,8.7],["LG",9.8,27.0],["HISENSE",23.8,0.0],["TCL",6.7,2.7],["ELECTROLUX",2.6,4.5],["SHARP",1.5,0.0],["HITACHI",1.4,0.0],["ACONATIC",1.2,0.0],["HAIER",0.0,1.2],["KASHIWA",0.0,0.6]]},{"r":"Bangkok","a":"AS BKK02","b":"BIG C (BANGNA)","rr1":"TOSHIBA","rr1m":50.4,"srm":32.3,"srk":2,"rl":true,"wr1":"TOSHIBA","wr1m":51.0,"swm":20.8,"swk":3,"wl":true,"brands":[["TOSHIBA",50.4,51.0],["SAMSUNG",32.3,20.8],["LG",3.4,28.3],["ACONATIC",9.8,0.0],["HISENSE",4.2,0.0]]},{"r":"Bangkok","a":"AS BKK02","b":"BIG C (SAPARN-KWAI)","rr1":"TOSHIBA","rr1m":46.5,"srm":7.4,"srk":5,"rl":true,"wr1":"HISENSE","wr1m":31.7,"swm":23.3,"swk":3,"wl":true,"brands":[["TOSHIBA",46.5,18.3],["HISENSE",23.4,31.7],["HITACHI",13.9,0.0],["LG",7.6,26.6],["SAMSUNG",7.4,23.3],["TCL",1.2,0.0]]},{"r":"Bangkok","a":"AS BKK04","b":"BIG C EXTRA (PETCHKASEM)","rr1":"TOSHIBA","rr1m":39.2,"srm":24.6,"srk":2,"rl":true,"wr1":"TOSHIBA","wr1m":40.7,"swm":13.0,"swk":3,"wl":true,"brands":[["TOSHIBA",39.2,40.7],["SAMSUNG",24.6,13.0],["LG",2.4,25.1],["TCL",10.0,4.9],["HISENSE",13.6,0.0],["HAIER",10.2,3.3],["ELECTROLUX",0.0,13.0]]},{"r":"Bangkok","a":"AS BKK04","b":"BIG C (PHET-KASEM)","rr1":"TOSHIBA","rr1m":38.1,"srm":20.7,"srk":2,"rl":true,"wr1":"SAMSUNG","wr1m":35.7,"swm":35.7,"swk":1,"wl":false,"brands":[["TOSHIBA",38.1,28.2],["SAMSUNG",20.7,35.7],["LG",17.5,23.2],["HISENSE",19.0,12.9],["ACONATIC",3.1,0.0],["TCL",1.6,0.0]]},{"r":"Bangkok","a":"AS BKK05","b":"BIG C EXTRA (BANGBON)","rr1":"LG","rr1m":25.0,"srm":3.8,"srk":7,"rl":true,"wr1":"TOSHIBA","wr1m":48.5,"swm":9.9,"swk":4,"wl":true,"brands":[["TOSHIBA",17.8,48.5],["LG",25.0,22.3],["HAIER",23.6,8.8],["SHARP",15.3,0.0],["HISENSE",8.3,10.5],["SAMSUNG",3.8,9.9],["ACONATIC",6.2,0.0]]},{"r":"Bangkok","a":"AS BKK05","b":"BIG C (DAO-KHANONG)","rr1":"HISENSE","rr1m":34.5,"srm":30.4,"srk":2,"rl":true,"wr1":"SAMSUNG","wr1m":72.5,"swm":72.5,"swk":1,"wl":false,"brands":[["SAMSUNG",30.4,72.5],["HISENSE",34.5,27.5],["SHARP",18.0,0.0],["MITSUBISHI",17.1,0.0]]},{"r":"Bangkok","a":"AS BKK05","b":"BIG C EXTRA (BANGPAKOK)","rr1":"HISENSE","rr1m":43.0,"srm":0.0,"srk":5,"rl":false,"wr1":"HISENSE","wr1m":59.1,"swm":40.9,"swk":2,"wl":true,"brands":[["HISENSE",43.0,59.1],["ACONATIC",24.5,0.0],["LG",18.3,0.0],["MITSUBISHI",14.1,0.0],["SAMSUNG",0.0,40.9]]},{"r":"Bangkok","a":"AS BKK06","b":"BIG C EXTRA (RAMINTRA)","rr1":"HISENSE","rr1m":43.1,"srm":19.0,"srk":2,"rl":true,"wr1":"HAIER","wr1m":27.3,"swm":8.1,"swk":6,"wl":true,"brands":[["HISENSE",43.1,16.3],["TOSHIBA",13.6,24.8],["SAMSUNG",19.0,8.1],["HAIER",6.6,27.3],["LG",3.7,12.6],["TCL",3.1,10.8],["MITSUBISHI",5.4,0.0],["HITACHI",3.9,0.0],["ACONATIC",1.5,0.0]]},{"r":"Bangkok","a":"AS BKK06","b":"BIG C (WONGSAWANG)","rr1":"SAMSUNG","rr1m":60.9,"srm":60.9,"srk":1,"rl":false,"wr1":"TOSHIBA","wr1m":88.8,"swm":8.1,"swk":2,"wl":true,"brands":[["TOSHIBA",28.6,88.8],["SAMSUNG",60.9,8.1],["HISENSE",8.1,0.0],["ACONATIC",2.4,0.0],["KASHIWA",0.0,3.1]]},{"r":"Bangkok","a":"AS BKK07","b":"BIG C (SUKSAWAD)","rr1":"TOSHIBA","rr1m":23.5,"srm":16.9,"srk":3,"rl":true,"wr1":"TOSHIBA","wr1m":31.9,"swm":23.6,"swk":2,"wl":true,"brands":[["TOSHIBA",23.5,31.9],["SAMSUNG",16.9,23.6],["HISENSE",21.4,9.0],["LG",5.8,17.2],["HITACHI",13.9,0.0],["HAIER",6.0,10.3],["MITSUBISHI",7.6,0.0],["ELECTROLUX",0.0,4.4],["ACONATIC",2.8,0.0],["TCL",2.1,0.0],["SHARP",0.0,2.6],["KASHIWA",0.0,1.1]]},{"r":"Bangkok","a":"AS BKK07","b":"BIG C (RAMA 2)","rr1":"HISENSE","rr1m":26.6,"srm":15.3,"srk":3,"rl":true,"wr1":"TOSHIBA","wr1m":34.9,"swm":16.7,"swk":3,"wl":true,"brands":[["TOSHIBA",13.5,34.9],["LG",12.6,31.7],["HAIER",22.5,10.1],["SAMSUNG",15.3,16.7],["HISENSE",26.6,0.0],["SHARP",7.1,0.0],["ELECTROLUX",0.0,6.7],["TCL",1.4,0.0],["ACONATIC",0.9,0.0]]},{"r":"Bangkok","a":"AS BKK07","b":"BIG C (SAMUT-PRAKRAN)","rr1":"TOSHIBA","rr1m":32.2,"srm":15.4,"srk":4,"rl":true,"wr1":"LG","wr1m":49.8,"swm":10.0,"swk":4,"wl":true,"brands":[["LG",30.5,49.8],["TOSHIBA",32.2,14.0],["HAIER",21.8,24.2],["SAMSUNG",15.4,10.0],["KASHIWA",0.0,2.0]]},{"r":"Bangkok","a":"AS BKK08","b":"BIG C EXTRA (CHAENGWATTANA)","rr1":"HISENSE","rr1m":39.8,"srm":7.5,"srk":5,"rl":true,"wr1":"HAIER","wr1m":37.9,"swm":0.0,"swk":6,"wl":false,"brands":[["HAIER",23.8,37.9],["HISENSE",39.8,4.4],["LG",7.5,31.8],["TOSHIBA",8.6,16.4],["ELECTROLUX",3.9,9.5],["SAMSUNG",7.5,0.0],["TCL",6.0,0.0],["ACONATIC",2.9,0.0]]},{"r":"Bangkok","a":"AS BKK08","b":"BIG C EXTRA (RATTANATIBETH)","rr1":"SAMSUNG","rr1m":66.4,"srm":66.4,"srk":1,"rl":false,"wr1":"TOSHIBA","wr1m":56.7,"swm":23.9,"swk":2,"wl":true,"brands":[["SAMSUNG",66.4,23.9],["TOSHIBA",0.0,56.7],["HISENSE",33.6,19.4]]},{"r":"Bangkok","a":"AS BKK09","b":"BIG C EXTRA (BANG YAI)","rr1":"HISENSE","rr1m":28.2,"srm":14.9,"srk":4,"rl":true,"wr1":"TOSHIBA","wr1m":38.2,"swm":23.8,"swk":2,"wl":true,"brands":[["TOSHIBA",23.3,38.2],["HISENSE",28.2,21.4],["SAMSUNG",14.9,23.8],["MITSUBISHI",21.9,0.0],["LG",8.2,14.7],["SHARP",3.6,0.0],["KASHIWA",0.0,1.9]]},{"r":"Bangkok","a":"AS BKK09","b":"BIG C (SAI NOI NONTHABURI)","rr1":"HISENSE","rr1m":83.3,"srm":5.7,"srk":2,"rl":true,"wr1":"HISENSE","wr1m":47.1,"swm":29.4,"swk":2,"wl":true,"brands":[["HISENSE",83.3,47.1],["SAMSUNG",5.7,29.4],["TOSHIBA",4.6,23.5],["TCL",3.3,0.0],["ACONATIC",3.1,0.0]]},{"r":"Bangkok","a":"AS BKK10","b":"BIG C EXTRA (ONNUCH)","rr1":"HITACHI","rr1m":57.2,"srm":10.4,"srk":3,"rl":true,"wr1":"HAIER","wr1m":26.0,"swm":17.0,"swk":4,"wl":true,"brands":[["HITACHI",57.2,17.7],["HAIER",12.9,26.0],["SAMSUNG",10.4,17.0],["TOSHIBA",3.0,19.6],["HISENSE",7.6,9.2],["ELECTROLUX",0.0,9.9],["LG",4.6,0.0],["ACONATIC",4.3,0.0],["KASHIWA",0.0,0.6]]},{"r":"Bangkok","a":"AS BKK10","b":"BIG C EXTRA (RAMA 4)","rr1":"HITACHI","rr1m":37.9,"srm":11.4,"srk":4,"rl":true,"wr1":"TOSHIBA","wr1m":38.0,"swm":36.1,"swk":2,"wl":true,"brands":[["HITACHI",37.9,7.7],["TOSHIBA",16.1,38.0],["SAMSUNG",11.4,36.1],["HAIER",11.9,0.0],["ELECTROLUX",9.6,0.0],["HISENSE",6.7,0.0],["ACONATIC",6.4,0.0],["LG",0.0,16.0],["KASHIWA",0.0,2.3]]},{"r":"Bangkok","a":"AS BKK10","b":"BIG C (EKAMAI)","rr1":"HISENSE","rr1m":36.3,"srm":35.9,"srk":2,"rl":true,"wr1":"HISENSE","wr1m":54.3,"swm":45.7,"swk":2,"wl":true,"brands":[["HISENSE",36.3,54.3],["SAMSUNG",35.9,45.7],["TOSHIBA",27.8,0.0]]},{"r":"Bangkok","a":"AS BKK11","b":"BIG C (BANGPLEE)","rr1":"TOSHIBA","rr1m":23.7,"srm":16.2,"srk":3,"rl":true,"wr1":"SAMSUNG","wr1m":27.6,"swm":27.6,"swk":1,"wl":false,"brands":[["SAMSUNG",16.2,27.6],["TOSHIBA",23.7,11.7],["HISENSE",16.5,10.4],["HITACHI",15.1,12.8],["LG",7.0,25.9],["HAIER",12.1,9.0],["SHARP",6.5,0.0],["ACONATIC",2.8,0.0],["KASHIWA",0.0,2.7]]},{"r":"Bangkok","a":"AS BKK11","b":"BIG C EXTRA (MEGA BANGNA)","rr1":"HISENSE","rr1m":38.6,"srm":33.4,"srk":2,"rl":true,"wr1":"SAMSUNG","wr1m":49.0,"swm":49.0,"swk":1,"wl":false,"brands":[["SAMSUNG",33.4,49.0],["HISENSE",38.6,26.6],["LG",7.1,24.5],["ACONATIC",10.5,0.0],["MITSUBISHI",10.4,0.0]]},{"r":"Bangkok","a":"AS BKK12","b":"BIG C (FUTURE PARK RANGSIT)","rr1":"TOSHIBA","rr1m":37.4,"srm":29.3,"srk":2,"rl":true,"wr1":"TOSHIBA","wr1m":39.3,"swm":16.8,"swk":3,"wl":true,"brands":[["TOSHIBA",37.4,39.3],["SAMSUNG",29.3,16.8],["HISENSE",20.5,22.6],["LG",6.6,12.6],["TCL",1.5,5.3],["HAIER",2.9,0.0],["ACONATIC",1.9,0.0],["KASHIWA",0.0,3.4]]},{"r":"Bangkok","a":"AS BKK12","b":"BIG C (LUMLUKA)","rr1":"SAMSUNG","rr1m":39.2,"srm":39.2,"srk":1,"rl":false,"wr1":"TOSHIBA","wr1m":31.7,"swm":27.1,"swk":2,"wl":true,"brands":[["SAMSUNG",39.2,27.1],["TOSHIBA",17.4,31.7],["HAIER",12.1,16.8],["LG",7.7,18.5],["HISENSE",13.0,5.9],["MITSUBISHI",7.9,0.0],["ACONATIC",2.6,0.0]]},{"r":"Bangkok","a":"AS BKK12","b":"BIG C EXTRA (LAM LUK KA KHLONG 4)","rr1":"HISENSE","rr1m":39.9,"srm":29.7,"srk":2,"rl":true,"wr1":"TOSHIBA","wr1m":66.7,"swm":33.3,"swk":2,"wl":true,"brands":[["SAMSUNG",29.7,33.3],["HISENSE",39.9,0.0],["TOSHIBA",8.1,66.7],["ACONATIC",12.5,0.0],["MITSUBISHI",9.9,0.0]]},{"r":"Central","a":"AS CT01","b":"BIG C (RAYONG)","rr1":"TOSHIBA","rr1m":26.0,"srm":6.3,"srk":6,"rl":true,"wr1":"TOSHIBA","wr1m":28.4,"swm":6.0,"swk":6,"wl":true,"brands":[["TOSHIBA",26.0,28.4],["HISENSE",24.6,15.5],["HAIER",11.6,18.8],["SHARP",14.7,4.5],["LG",6.7,12.9],["TCL",3.2,13.9],["SAMSUNG",6.3,6.0],["MITSUBISHI",4.2,0.0],["ACONATIC",2.7,0.0]]},{"r":"Central","a":"AS CT04","b":"BIG C EXTRA (BAN BUENG)","rr1":"HISENSE","rr1m":45.2,"srm":28.4,"srk":2,"rl":true,"wr1":"LG","wr1m":32.6,"swm":17.4,"swk":3,"wl":true,"brands":[["HISENSE",45.2,22.2],["LG",22.2,32.6],["SAMSUNG",28.4,17.4],["TOSHIBA",4.2,13.8],["HAIER",0.0,14.0]]},{"r":"Central","a":"AS CT04","b":"BIG C EXTRA CHONBURI)","rr1":"HISENSE","rr1m":54.4,"srm":28.0,"srk":2,"rl":true,"wr1":"HISENSE","wr1m":65.3,"swm":0.0,"swk":4,"wl":false,"brands":[["HISENSE",54.4,65.3],["SAMSUNG",28.0,0.0],["ACONATIC",11.6,0.0],["TOSHIBA",0.0,29.9],["ELECTROLUX",6.0,0.0],["KASHIWA",0.0,4.8]]},{"r":"Central","a":"AS CT05","b":"BIG C EXTRA (PATTAYA KLANG)","rr1":"LG","rr1m":21.9,"srm":12.0,"srk":4,"rl":true,"wr1":"HISENSE","wr1m":18.7,"swm":18.7,"swk":2,"wl":true,"brands":[["LG",21.9,18.3],["TOSHIBA",20.8,18.1],["HISENSE",15.7,18.7],["SAMSUNG",12.0,18.7],["HAIER",6.8,15.6],["SHARP",8.3,4.4],["HITACHI",9.7,0.0],["ACONATIC",4.7,0.0],["ELECTROLUX",0.0,5.6],["KASHIWA",0.0,0.8]]},{"r":"Central","a":"AS CT05","b":"BIG C  (BOWIN)","rr1":"SAMSUNG","rr1m":42.2,"srm":42.2,"srk":1,"rl":false,"wr1":"LG","wr1m":43.2,"swm":40.1,"swk":2,"wl":true,"brands":[["LG",39.8,43.2],["SAMSUNG",42.2,40.1],["HISENSE",7.1,16.7],["TOSHIBA",6.6,0.0],["HAIER",4.4,0.0]]},{"r":"Central","a":"AS CT06","b":"BIG C (SOUTH PATTAYA)","rr1":"SAMSUNG","rr1m":36.0,"srm":36.0,"srk":1,"rl":false,"wr1":"TOSHIBA","wr1m":28.9,"swm":23.3,"swk":2,"wl":true,"brands":[["SAMSUNG",36.0,23.3],["HISENSE",23.9,12.4],["TOSHIBA",9.4,28.9],["LG",12.4,16.4],["HAIER",6.5,6.8],["ELECTROLUX",0.0,7.3],["HITACHI",4.4,0.0],["SHARP",3.9,0.0],["MITSUBISHI",3.5,0.0],["TCL",0.0,2.6],["KASHIWA",0.0,2.4]]},{"r":"Central","a":"AS CT06","b":"BIG C (SATTAHIP)","rr1":"HISENSE","rr1m":53.6,"srm":13.2,"srk":3,"rl":true,"wr1":"LG","wr1m":39.5,"swm":23.8,"swk":3,"wl":true,"brands":[["HISENSE",53.6,10.7],["LG",17.4,39.5],["SAMSUNG",13.2,23.8],["TOSHIBA",7.9,26.0],["ACONATIC",7.9,0.0]]},{"r":"Central","a":"AS CT07","b":"BIG C (MAHACHAI)","rr1":"SAMSUNG","rr1m":40.0,"srm":40.0,"srk":1,"rl":false,"wr1":"TOSHIBA","wr1m":35.8,"swm":29.0,"swk":2,"wl":true,"brands":[["SAMSUNG",40.0,29.0],["HISENSE",27.1,24.5],["TOSHIBA",14.7,35.8],["LG",5.2,9.2],["MITSUBISHI",4.2,0.0],["HAIER",4.0,0.0],["TCL",2.7,0.0],["ACONATIC",2.1,0.0],["KASHIWA",0.0,1.4]]},{"r":"Central","a":"AS CT08","b":"BIG C (AOMYAI)","rr1":"HITACHI","rr1m":31.7,"srm":14.9,"srk":3,"rl":true,"wr1":"TOSHIBA","wr1m":44.2,"swm":4.4,"swk":7,"wl":true,"brands":[["HITACHI",31.7,15.8],["TOSHIBA",26.0,44.2],["SAMSUNG",14.9,4.4],["LG",10.4,10.8],["HISENSE",8.7,7.0],["HAIER",5.9,11.0],["TCL",0.8,6.2],["MITSUBISHI",0.9,0.0],["ACONATIC",0.7,0.0],["KASHIWA",0.0,0.7]]},{"r":"Central","a":"AS CT08","b":"BIG C (NAKHON PATHOM)","rr1":"HISENSE","rr1m":26.0,"srm":19.5,"srk":4,"rl":true,"wr1":"LG","wr1m":26.4,"swm":11.1,"swk":5,"wl":true,"brands":[["TOSHIBA",21.5,24.1],["HISENSE",26.0,8.0],["HITACHI",19.9,11.5],["SAMSUNG",19.5,11.1],["LG",4.4,26.4],["TCL",3.7,15.9],["HAIER",4.9,0.0],["SHARP",0.0,2.4],["KASHIWA",0.0,0.6]]},{"r":"Central","a":"AS CT09","b":"BIG C (RATCHABURI)","rr1":"HITACHI","rr1m":27.1,"srm":15.0,"srk":3,"rl":true,"wr1":"TOSHIBA","wr1m":35.8,"swm":15.2,"swk":4,"wl":true,"brands":[["TOSHIBA",11.0,35.8],["HITACHI",27.1,3.3],["SAMSUNG",15.0,15.2],["HAIER",10.0,17.9],["HISENSE",14.4,6.2],["MITSUBISHI",16.3,0.0],["LG",3.7,21.5],["ACONATIC",1.4,0.0],["TCL",1.1,0.0]]},{"r":"Central","a":"AS CT13","b":"BIG C (LOP BURI)","rr1":"TOSHIBA","rr1m":34.8,"srm":11.8,"srk":4,"rl":true,"wr1":"TOSHIBA","wr1m":42.6,"swm":16.7,"swk":2,"wl":true,"brands":[["TOSHIBA",34.8,42.6],["LG",14.9,14.1],["SAMSUNG",11.8,16.7],["HITACHI",20.8,2.4],["HISENSE",8.4,8.3],["HAIER",3.0,14.6],["ACONATIC",3.5,0.0],["TCL",1.7,0.0],["SHARP",1.1,0.0],["KASHIWA",0.0,1.4]]},{"r":"Central","a":"AS CT13","b":"BIG C (ANG THONG)","rr1":"HITACHI","rr1m":38.1,"srm":4.1,"srk":6,"rl":true,"wr1":"SAMSUNG","wr1m":33.5,"swm":33.5,"swk":1,"wl":false,"brands":[["HITACHI",38.1,5.4],["HAIER",11.2,28.6],["TOSHIBA",14.0,18.4],["SAMSUNG",4.1,33.5],["LG",18.6,4.1],["HISENSE",9.2,6.6],["SHARP",4.0,3.4],["ACONATIC",0.8,0.0]]},{"r":"Central","a":"AS CT14","b":"BIG C (SA KAEO)","rr1":"HISENSE","rr1m":68.2,"srm":21.9,"srk":2,"rl":true,"wr1":"SAMSUNG","wr1m":57.7,"swm":57.7,"swk":1,"wl":false,"brands":[["HISENSE",68.2,42.3],["SAMSUNG",21.9,57.7],["MITSUBISHI",9.8,0.0]]},{"r":"Central","a":"AS CT14","b":"MEGA MARKET (ARANYAPRATHET )","rr1":"HISENSE","rr1m":40.3,"srm":5.5,"srk":5,"rl":true,"wr1":"HAIER","wr1m":42.3,"swm":23.5,"swk":2,"wl":true,"brands":[["HISENSE",40.3,18.6],["HAIER",27.6,42.3],["TOSHIBA",18.2,0.0],["SAMSUNG",5.5,23.5],["MITSUBISHI",8.4,0.0],["LG",0.0,15.6]]},{"r":"Central","a":"AS CT15","b":"BIG C (KANCHANABURI)","rr1":"LG","rr1m":28.2,"srm":19.9,"srk":3,"rl":true,"wr1":"LG","wr1m":48.5,"swm":7.1,"swk":6,"wl":true,"brands":[["LG",28.2,48.5],["TOSHIBA",21.4,8.8],["SAMSUNG",19.9,7.1],["HISENSE",13.5,7.9],["HAIER",6.9,19.1],["SHARP",4.5,8.6],["ELECTROLUX",3.7,0.0],["ACONATIC",2.0,0.0]]}];
+
+let cat='ref';
+const answers={};
+const openSet=new Set();
+
+// populate AS Code dropdown
+const allAS=[...new Set(RAW.map(d=>d.a))].sort();
+const asSelect=document.getElementById('f-as');
+allAS.forEach(a=>{const o=document.createElement('option');o.value=a;o.textContent=a;asSelect.appendChild(o);});
+
+function updateCounts(){
+  const reg=document.getElementById('f-region').value;
+  const as=document.getElementById('f-as').value;
+  document.getElementById('count-ref').textContent=RAW.filter(d=>d.rl&&(!reg||d.r===reg)&&(!as||d.a===as)).length+' สาขาที่แพ้';
+  document.getElementById('count-wm').textContent=RAW.filter(d=>d.wl&&(!reg||d.r===reg)&&(!as||d.a===as)).length+' สาขาที่แพ้';
+}
+
+function setCat(c){
+  cat=c;
+  const rC=document.getElementById('card-ref'),wC=document.getElementById('card-wm');
+  const rI=document.getElementById('icon-ref'),wI=document.getElementById('icon-wm');
+  const bn=document.getElementById('banner');
+  if(c==='ref'){
+    rC.className='cat-card ref-on'; rI.style.cssText='background:var(--blue);color:white';
+    wC.className='cat-card'; wI.style.cssText='';
+    bn.className='banner ref';
+    document.getElementById('banner-icon').className='ti ti-fridge';
+    document.getElementById('banner-text').textContent='Refrigerator — แสดงสาขาที่ Samsung แพ้ใน REF';
+  } else {
+    wC.className='cat-card wm-on'; wI.style.cssText='background:var(--green);color:white';
+    rC.className='cat-card'; rI.style.cssText='';
+    bn.className='banner wm';
+    document.getElementById('banner-icon').className='ti ti-wash-machine';
+    document.getElementById('banner-text').textContent='Washing Machine — แสดงสาขาที่ Samsung แพ้ใน WM';
+  }
+  onFilter();
+}
+
+function onFilter(){
+  const reg=document.getElementById('f-region').value;
+  const as=document.getElementById('f-as').value;
+  // filter AS options
+  const opts=asSelect.options;
+  for(let i=1;i<opts.length;i++){
+    const d=RAW.find(r=>r.a===opts[i].value);
+    opts[i].style.display=(!reg||d.r===reg)?'':'none';
+  }
+  updateCounts();
+  const loses=cat==='ref'?'rl':'wl';
+  const list=RAW.filter(d=>d[loses]&&(!reg||d.r===reg)&&(!as||d.a===as));
+  const total=list.length;
+  const done=list.filter(d=>answers[d.b+'_'+cat]).length;
+  document.getElementById('s-total').textContent=total;
+  document.getElementById('s-done').textContent=done;
+  document.getElementById('s-pct').textContent=total?Math.round(done/total*100)+'%':'0%';
+  document.getElementById('prog').style.width=total?Math.round(done/total*100)+'%':'0%';
+  const blist=document.getElementById('blist');
+  const empty=document.getElementById('empty');
+  blist.innerHTML='';
+  if(!list.length){empty.style.display='block';return;}
+  empty.style.display='none';
+  list.forEach(d=>blist.appendChild(makeCard(d)));
+}
+
+function rkCls(rk){return rk===2?'rk2':rk===3?'rk3':rk>=4?'rk4':'rk-na';}
+
+function makeCard(d){
+  const isRef=cat==='ref';
+  const samMs=isRef?d.srm:d.swm;
+  const samRk=isRef?d.srk:d.swk;
+  const r1Brand=isRef?d.rr1:d.wr1;
+  const r1Ms=isRef?d.rr1m:d.wr1m;
+  const key=d.b+'_'+cat;
+  const done=answers[key];
+  const isOpen=openSet.has(key);
+  const kid=key.replace(/\W/g,'_');
+  const div=document.createElement('div');
+  div.className='bc'+(isOpen?' open':'');
+
+  const sorted=[...d.brands].sort((a,b)=>isRef?b[1]-a[1]:b[2]-a[2]);
+  const maxMs=Math.max(...sorted.map(b=>isRef?b[1]:b[2]));
+  const rivals=sorted.filter(b=>b[0]!=='SAMSUNG'&&(isRef?b[1]:b[2])>samMs);
+  const rivalNames=rivals.map(b=>b[0]).join(' / ')||r1Brand;
+
+  const bars=sorted.filter(b=>(isRef?b[1]:b[2])>0).map((b,i)=>{
+    const ms=isRef?b[1]:b[2]; const isSam=b[0]==='SAMSUNG';
+    const fc=isSam?'f-sam':i===0?'f-r1':i===1?'f-r2':'f-oth';
+    return `<div class="bar-row">
+      <span class="br-name ${isSam?'sam':''}">${b[0].length>11?b[0].slice(0,10)+'…':b[0]}</span>
+      <div class="bar-track"><div class="bar-fill ${fc}" style="width:${maxMs>0?Math.round(ms/maxMs*100):0}%"></div></div>
+      <span class="br-pct ${isSam?'sam':i===0?'r1':''}">${ms}%</span>
+    </div>`;
+  }).join('');
+
+  const rivalRows=rivals.map((b,i)=>{
+    const ms=isRef?b[1]:b[2];
+    const bg=i===0?'background:var(--red-light);color:#A32D2D':i===1?'background:var(--amber-light);color:#854F0B':'background:var(--surface2);color:var(--text2)';
+    return `<div class="rival-row"><div class="r-rk" style="${bg}">${i+1}</div><div class="r-name">${b[0]}</div><span class="r-ms">${ms}%</span></div>`;
+  }).join('');
+
+  let formHtml='';
+  if(done){
+    formHtml=`<div class="saved-box"><i class="ti ti-circle-check" style="font-size:18px;color:#3B6D11"></i><div><div style="font-size:12px;font-weight:600;color:var(--saved-text)">บันทึกเข้า Google Sheet แล้ว</div><div style="font-size:11px;color:#3B6D11;margin-top:2px">${done.cause?done.cause.slice(0,70)+(done.cause.length>70?'…':''):''}</div></div></div>`;
+  } else {
+    formHtml=`
+      <div class="fb-block">
+        <div class="fb-hd"><div class="fb-num">1</div><div><div class="fb-title">สาเหตุที่ ${rivalNames} ชนะ Samsung</div><div class="fb-sub">วิเคราะห์แยกแต่ละแบรนด์ที่อยู่เหนือกว่า</div></div></div>
+        <textarea id="ta1_${kid}" placeholder="เช่น ${r1Brand}: Display ดีกว่า, Promotion แรงกว่า..."></textarea>
+      </div>
+      <div class="divider"></div>
+      <div class="fb-block">
+        <div class="fb-hd"><div class="fb-num">2</div><div><div class="fb-title">ข้อเสนอแนะ / Action Plan</div><div class="fb-sub">แผนปรับปรุง MS% Samsung ใน ${cat.toUpperCase()}</div></div></div>
+        <textarea id="ta2_${kid}" placeholder="เช่น ขอพื้นที่ Display เพิ่ม, จัด Promotion, เพิ่ม PC..."></textarea>
+      </div>
+      <div id="err_${kid}"></div>
+      <div class="footer-row">
+        <button class="btn-cancel" onclick="closeCard('${key}')">ยกเลิก</button>
+        <button class="btn-save" id="savebtn_${kid}" onclick="saveCard('${key}','${d.b.replace(/'/g,"\\'")}','${d.r}','${d.a}','${r1Brand}',${r1Ms},${samMs},'${samRk}')">
+          <i class="ti ti-device-floppy"></i> บันทึก
+        </button>
+      </div>`;
+  }
+
+  div.innerHTML=`
+    <div class="bc-head" onclick="toggleCard('${key}')">
+      <div class="rk-badge ${rkCls(samRk)}">${samRk}</div>
+      <div class="bc-info">
+        <div class="bc-name">${d.b}</div>
+        <div class="bc-sub">${d.a} · ${d.r}</div>
+      </div>
+      <div class="bc-right">
+        <span class="pill ${isRef?'pill-r1':'pill-r1-wm'}">${r1Brand} ${r1Ms}%</span>
+        <span class="pill pill-sam">SAM ${samMs}%</span>
+        ${done?'<div class="done-dot"></div>':''}
+        <i class="ti ti-chevron-down chev${isOpen?' r':''}"></i>
+      </div>
+    </div>
+    <div class="bc-body${isOpen?' show':''}">
+      <div class="body-sec-title">${isRef?'MS% Refrigerator':'MS% Washing Machine'}</div>
+      ${bars}
+      <div class="rivals-wrap">
+        <div class="body-sec-title" style="margin-top:.875rem">แบรนด์ที่ชนะ Samsung</div>
+        ${rivalRows}
+        <div class="sam-row"><div class="s-rk">${samRk}</div><div class="s-name">SAMSUNG (เรา)</div><span class="s-ms">${samMs}%</span></div>
+      </div>
+      ${formHtml}
+    </div>`;
+  return div;
+}
+
+function toggleCard(key){openSet.has(key)?openSet.delete(key):openSet.add(key);onFilter();}
+function closeCard(key){openSet.delete(key);onFilter();}
+
+async function saveCard(key,branch,region,as_code,r1Brand,r1Ms,samMs,samRk){
+  const kid=key.replace(/\W/g,'_');
+  const cause=document.getElementById('ta1_'+kid)?.value.trim()||'';
+  const action=document.getElementById('ta2_'+kid)?.value.trim()||'';
+  if(!cause){
+    const el=document.getElementById('ta1_'+kid);
+    if(el){el.style.borderColor='var(--red)';setTimeout(()=>el.style.borderColor='',1500);}
+    return;
+  }
+  const btn=document.getElementById('savebtn_'+kid);
+  if(btn){btn.disabled=true;btn.innerHTML='<i class="ti ti-loader"></i> กำลังบันทึก...';}
+
+  const payload={
+    region, as_code, branch,
+    category: cat.toUpperCase(),
+    r1_brand: r1Brand,
+    r1_ms: r1Ms,
+    sam_ms: samMs,
+    sam_rank: samRk,
+    cause,
+    action_plan: action
+  };
+
+  try {
+    // ใช้ no-cors เพื่อหลีกเลี่ยง CORS block จาก GAS
+    // GAS จะรับข้อมูลและบันทึก แต่ browser จะไม่ได้รับ response กลับ
+    await fetch(GAS_URL, {
+      method: 'POST',
+      mode: 'no-cors',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify(payload)
+    });
+    // no-cors ไม่ return response — assume success
+    answers[key] = { cause, action };
+    openSet.delete(key);
+    onFilter();
+  } catch(e){
+    const errEl=document.getElementById('err_'+kid);
+    if(errEl) errEl.innerHTML=`<div class="error-box"><i class="ti ti-alert-circle"></i> เชื่อมต่อไม่ได้ กรุณาตรวจสอบ Internet: ${e.message}</div>`;
+    if(btn){btn.disabled=false;btn.innerHTML='<i class="ti ti-refresh"></i> ลองอีกครั้ง';}
+  }
+}
+
+onFilter();
+</script>
+</body>
+</html>
