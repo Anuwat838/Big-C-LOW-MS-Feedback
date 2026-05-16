@@ -464,7 +464,7 @@ function makeCard(d){
     <div id="err_${kid}"></div>
     <div class="footer-row"><button class="btn-cancel" onclick="closeCard('${key}')">ยกเลิก</button><button class="btn-save" id="savebtn_${kid}" onclick="saveCard('${key}','${d.b.replace(/'/g,"\\'")}','${d.r}','${d.a}','${r1B}',${r1M},${samMs},'${samRk}')"><i class="ti ti-device-floppy"></i> บันทึก</button></div>`;
   }
-  div.innerHTML=`<div class="bc-head" onclick="toggleCard('${key}')"><div class="rk-b ${rkCls(samRk)}">${samRk}</div><div class="bc-info"><div class="bc-name">${d.b}</div><div class="bc-sub">${d.a} · ${d.r}</div></div><div class="bc-right"><span class="pill ${isRef?'pill-r1':'pill-r1w'}">${r1B} ${r1M}%</span><span class="pill pill-sam">SAM ${samMs}%</span>${done?'<div class="done-dot"></div>':''}<i class="ti ti-chevron-down chev${isOpen?' r':''}"></i></div></div>
+  div.innerHTML=`<div class="bc-head" onclick="toggleCard('${key}')"><div class="rk-b ${rkCls(samRk)}">${samRk}</div><div class="bc-info"><div class="bc-name">${d.b}</div><div class="bc-sub">${done?"<span style='color:#3B6D11;font-weight:500'><i class='ti ti-circle-check'></i> ส่งข้อมูลแล้ว · "+done.ts+"</span>":d.a+" · "+d.r}</div></div><div class="bc-right"><span class="pill ${isRef?'pill-r1':'pill-r1w'}">${r1B} ${r1M}%</span><span class="pill pill-sam">SAM ${samMs}%</span>${done?'<div class="done-dot"></div>':''}<i class="ti ti-chevron-down chev${isOpen?' r':''}"></i></div></div>
   <div class="bc-body${isOpen?' show':''}"><div class="body-lbl">${isRef?'MS% Refrigerator':'MS% Washing Machine'}</div>${bars}<div class="rivals-wrap"><div class="body-lbl" style="margin-top:.875rem">แบรนด์ที่ชนะ Samsung</div>${rivalRows}<div class="sam-row"><div class="s-rk">${samRk}</div><div class="s-name">SAMSUNG (เรา)</div><span class="s-ms">${samMs}%</span></div></div>${form}</div>`;
   return div;
 }
@@ -480,7 +480,8 @@ async function saveCard(key,branch,region,as_code,r1B,r1M,samMs,samRk){
   try{
     await fetch(GAS_URL,{method:'POST',mode:'no-cors',headers:{'Content-Type':'application/json'},
       body:JSON.stringify({region,as_code,branch,category:cat.toUpperCase(),r1_brand:r1B,r1_ms:r1M,sam_ms:samMs,sam_rank:samRk,cause,action_plan:action})});
-    answers[key]={cause,action};
+    const ts=new Date().toLocaleString("th-TH",{timeZone:"Asia/Bangkok",day:"2-digit",month:"2-digit",year:"2-digit",hour:"2-digit",minute:"2-digit"});
+    answers[key]={cause,action,ts};
     openSet.delete(key);
     onFilter();
   }catch(e){
@@ -553,8 +554,36 @@ function openDp(d,i){
 function closeDp(){smActive=null;document.getElementById('dp').classList.remove('show');renderSummary();}
 
 /* ── INIT ── */
+// โหลดสถานะการกรอกจาก Sheet ทันทีที่เปิดหน้า เพื่อให้ status คงอยู่แม้ reload
+async function loadAnswersFromSheet(){
+  try{
+    const res=await fetch(GAS_URL+'?action=read');
+    const json=await res.json();
+    if(json.status==='ok'&&json.data){
+      const TEST_BRANCHES=['__VERIFY__','TEST - CONNECTION CHECK','TEST - VERIFY CONNECTION'];
+      json.data
+        .filter(r=>!TEST_BRANCHES.includes(r.branch)&&r.branch&&r.category)
+        .forEach(r=>{
+          // ใช้ timestamp ล่าสุดของแต่ละ branch+category (sort ตาม timestamp จาก Sheet)
+          const key=r.branch+'_'+r.category.toLowerCase();
+          // เขียนทับด้วยข้อมูลล่าสุดเสมอ (Sheet เรียงตามเวลา row ล่าสุด = ล่าสุด)
+          answers[key]={
+            cause: r.cause||'',
+            action: r.action_plan||'',
+            ts: r.timestamp||''
+          };
+        });
+      onFilter(); // re-render survey list พร้อม status ที่โหลดมา
+    }
+  }catch(e){
+    // ถ้าโหลดไม่ได้ ก็แสดง survey ปกติ ไม่มี status
+    console.warn('loadAnswersFromSheet failed:',e.message);
+  }
+}
+
 onFilter();
 verifyConn();
+loadAnswersFromSheet();
 </script>
 </body>
 </html>
